@@ -116,7 +116,20 @@ async function init() {
       // WHEN I enter my GitHub username
       // THEN this is added to the section of the README entitled Questions, with a link to my GitHub profile
 
-      writeToFile("Read.md", ["##" + " " + response.GitHubuser] + " \n");
+      writeToFile(
+        "Read.md",
+        [
+          "## GitHub user: " +
+            " " +
+            "[" +
+            response.GitHubuser +
+            "]" +
+            "(" +
+            response.GitHubuser,
+        ] +
+          ")" +
+          " \n"
+      );
       // WHEN I enter my email address
       // THEN this is added to the section of the README entitled Questions, with instructions on how to reach me with additional questions
 
