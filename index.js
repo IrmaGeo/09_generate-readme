@@ -83,44 +83,49 @@ function writeToFile(fileName, data) {
 // THEN this is displayed as the title of the README
 // WHEN I enter a description, installation instructions, usage information, contribution guidelines, and test instructions
 // THEN this information is added to the sections of the README entitled Description, Installation, Usage, Contributing, and Tests
-function init() {
-  inquirer.prompt(questions).then((response) => {
-    // WHEN I choose a license for my application from a list of options
-    // THEN a badge for that license is added hear the top of the README and a notice is added to the section of the README entitled License that explains which license the application is covered under
+async function init() {
+  try {
+    inquirer.prompt(questions).then((response) => {
+      // WHEN I choose a license for my application from a list of options
+      // THEN a badge for that license is added hear the top of the README and a notice is added to the section of the README entitled License that explains which license the application is covered under
 
-    if (response.license === "MIT license") {
-      response.license =
-        "[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)";
-      writeToFile("Read.md", ["\n" + " " + response.license] + " \n");
-    } else {
-      if (response.license === "Apache License 2.0") {
-        response.license =
-          "[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)";
-        writeToFile("Read.md", ["\n" + " " + response.license] + " \n");
+      if (response.license === "MIT license") {
+        response.licenseBG =
+          "[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)";
       } else {
-        response.license =
-          "[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)";
-        writeToFile("Read.md", ["\n" + " " + response.license] + " \n");
+        if (response.license === "Apache License 2.0") {
+          response.licenseBG =
+            "[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)";
+        } else {
+          response.licenseBG =
+            "[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)";
+        }
       }
-    }
-    writeToFile("Read.md", ["#" + " " + response.badge] + " \n");
-    writeToFile("Read.md", ["#" + " " + response.title] + " \n");
-    writeToFile("Read.md", ["##" + " " + response.description] + " \n");
-    writeToFile("Read.md", ["##" + " " + response.content] + " \n");
-    writeToFile("Read.md", ["##" + " " + response.Installation] + " \n");
-    writeToFile("Read.md", ["##" + " " + response.usage] + " \n");
-    writeToFile("Read.md", ["##" + " " + response.Contributing] + " \n");
-    writeToFile("Read.md", ["##" + " " + response.tests] + " \n");
-    // WHEN I enter my GitHub username
-    // THEN this is added to the section of the README entitled Questions, with a link to my GitHub profile
 
-    writeToFile("Read.md", ["##" + " " + response.GitHubuser] + " \n");
-    // WHEN I enter my email address
-    // THEN this is added to the section of the README entitled Questions, with instructions on how to reach me with additional questions
+      writeToFile(
+        "Read.md",
+        ["#" + " " + response.title + " " + response.licenseBG] + " \n"
+      );
+      writeToFile("Read.md", ["##" + " " + response.description] + " \n");
+      writeToFile("Read.md", ["## CONTENT" + " " + response.content] + " \n");
+      writeToFile("Read.md", ["##" + " " + response.Installation] + " \n");
+      writeToFile("Read.md", ["##" + " " + response.usage] + " \n");
+      writeToFile("Read.md", ["\n" + " " + response.license] + " \n");
+      writeToFile("Read.md", ["##" + " " + response.Contributing] + " \n");
+      writeToFile("Read.md", ["##" + " " + response.tests] + " \n");
+      // WHEN I enter my GitHub username
+      // THEN this is added to the section of the README entitled Questions, with a link to my GitHub profile
 
-    writeToFile("Read.md", ["##" + " " + response.email] + " \n");
-    writeToFile("Read.md", ["##" + " " + response.repository] + " \n");
-  });
+      writeToFile("Read.md", ["##" + " " + response.GitHubuser] + " \n");
+      // WHEN I enter my email address
+      // THEN this is added to the section of the README entitled Questions, with instructions on how to reach me with additional questions
+
+      writeToFile("Read.md", ["##" + " " + response.email] + " \n");
+      writeToFile("Read.md", ["##" + " " + response.repository] + " \n");
+    });
+  } catch (err) {
+    console.log(err);
+  }
 }
 // function call to initialize program
 
