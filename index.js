@@ -73,6 +73,7 @@ function writeToFile(fileName, data) {
     console.log("Success!");
   });
 }
+// ====== validate functtion=====
 
 // WHEN I enter my project title
 // THEN this is displayed as the title of the README
@@ -81,9 +82,6 @@ function writeToFile(fileName, data) {
 async function init() {
   try {
     var response = await inquirer.prompt(questions);
-
-    // WHEN I choose a license for my application from a list of options
-    // THEN a badge for that license is added hear the top of the README and a notice is added to the section of the README entitled License that explains which license the application is covered under
 
     if (response.license == "MIT license") {
       response.licenseBG =
@@ -98,54 +96,55 @@ async function init() {
       }
     }
 
-    writeToFile("Read.md", [
+    const title = await writeToFile("Read.md", [
       "#" + " " + response.title + " " + response.licenseBG + "\n",
     ]);
+
     // WHEN I click on the links in the Table of Contents
     // THEN I am taken to the corresponding section of the README
-    writeToFile(
+    const table = await writeToFile(
       "Read.md",
-      "## Tabel of contact \n" +
+      "\n## Tabel of contact \n" +
         "- [Installation](#Installations)\n" +
         "- [Licenses](#Licenses)\n" +
         "- [Questions](#questions)\n" +
         "- [Tests](#Tests)\n" +
         "\n"
     );
-    const desc = await writeToFile(
+    const description = await writeToFile(
       "Read.md",
-      "## Project Desctiption \n" + " " + response.description + " \n"
+      "\n## Project Desctiption \n" + "``md " + response.description + "``\n"
     );
 
-    const inst = await writeToFile(
+    const installation = await writeToFile(
       "Read.md",
-      "## Installations \n" + "```" + response.installation + "```" + " \n"
+      "\n## Installations \n" + "```" + response.installation + "```" + " \n"
     );
-    const usag = await writeToFile(
+    const usage = await writeToFile(
       "Read.md",
-      "## USAGE \n" + " " + response.usage + " \n"
+      "\n## USAGE \n" + " " + response.usage + " \n"
     );
-    const lice = await writeToFile(
+    const license = await writeToFile(
       "Read.md",
-      "## Licenses \n" + " " + response.license + " \n"
+      "\n## Licenses \n" + " " + response.license + " \n"
     );
-    const contri = await writeToFile(
+    const Contributing = await writeToFile(
       "Read.md",
-      "## Contributing \n" + " " + response.Contributing + " \n"
+      "\n## Contributing \n" + " " + response.Contributing + " \n"
     );
-    const test = await writeToFile(
+    const tests = await writeToFile(
       "Read.md",
-      "## Tests \n" + " " + response.tests + " \n"
+      "\n## Tests \n" + " " + response.tests + " \n"
     );
     // WHEN I enter my GitHub username
     // THEN this is added to the section of the README entitled Questions, with a link to my GitHub profile
     // WHEN I enter my email address
     // THEN this is added to the section of the README entitled Questions, with instructions on how to reach me with additional questions
 
-    const ques = await writeToFile(
+    const question = await writeToFile(
       "Read.md",
 
-      "## questions \n" +
+      "\n## questions \n" +
         "* GitHub user: " +
         " " +
         "[" +
@@ -165,6 +164,9 @@ async function init() {
         " \n" +
         "\n"
     );
+
+    // WHEN I choose a license for my application from a list of options
+    // THEN a badge for that license is added hear the top of the README and a notice is added to the section of the README entitled License that explains which license the application is covered under
   } catch (err) {
     console.log(err);
   }
