@@ -27,7 +27,7 @@ const questions = [
     name: "usage",
   },
   {
-    type: "checkbox",
+    type: "list",
     message: "Choose the License",
     name: "license",
     choices: [
@@ -85,11 +85,11 @@ async function init() {
     // WHEN I choose a license for my application from a list of options
     // THEN a badge for that license is added hear the top of the README and a notice is added to the section of the README entitled License that explains which license the application is covered under
 
-    if (response.license[0] === "MIT license") {
+    if (response.license == "MIT license") {
       response.licenseBG =
         "[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)";
     } else {
-      if (response.license[0] === "Apache License 2.0") {
+      if (response.license === "Apache License 2.0") {
         response.licenseBG =
           "[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)";
       } else {
@@ -98,43 +98,44 @@ async function init() {
       }
     }
 
-    writeToFile(
-      "Read.md",
-      ["#" + " " + response.title + " " + response.licenseBG] + " \n"
-    );
+    writeToFile("Read.md", [
+      "#" + " " + response.title + " " + response.licenseBG + "\n",
+    ]);
     // WHEN I click on the links in the Table of Contents
     // THEN I am taken to the corresponding section of the README
-    writeToFile("Read.md", [
+    writeToFile(
+      "Read.md",
       "## Tabel of contact \n" +
         "- [Installation](#Installations)\n" +
         "- [Licenses](#Licenses)\n" +
         "- [Questions](#questions)\n" +
-        "- [Tests](#Tests)\n",
-    ]);
+        "- [Tests](#Tests)\n" +
+        "\n"
+    );
     const desc = await writeToFile(
       "Read.md",
-      ["## Project Desctiption \n" + " " + response.description] + " \n"
+      "## Project Desctiption \n" + " " + response.description + " \n"
     );
 
     const inst = await writeToFile(
       "Read.md",
-      ["## Installations \n" + " " + response.installation] + " \n"
+      "## Installations \n" + "```" + response.installation + "```" + " \n"
     );
     const usag = await writeToFile(
       "Read.md",
-      ["## USAGE \n" + " " + response.usage] + " \n"
+      "## USAGE \n" + " " + response.usage + " \n"
     );
     const lice = await writeToFile(
       "Read.md",
-      ["## Licenses \n" + " " + response.license] + " \n"
+      "## Licenses \n" + " " + response.license + " \n"
     );
     const contri = await writeToFile(
       "Read.md",
-      ["## Contributing \n" + " " + response.Contributing] + " \n"
+      "## Contributing \n" + " " + response.Contributing + " \n"
     );
     const test = await writeToFile(
       "Read.md",
-      ["## Tests \n" + " " + response.tests] + " \n"
+      "## Tests \n" + " " + response.tests + " \n"
     );
     // WHEN I enter my GitHub username
     // THEN this is added to the section of the README entitled Questions, with a link to my GitHub profile
@@ -143,17 +144,16 @@ async function init() {
 
     const ques = await writeToFile(
       "Read.md",
-      [
-        "# questions \n" +
-          "* GitHub user: " +
-          " " +
-          "[" +
-          response.GitHubuser +
-          "]" +
-          "(" +
-          response.GitHubuser,
-      ] +
-        ")" +
+
+      "## questions \n" +
+        "* GitHub user: " +
+        " " +
+        "[" +
+        response.GitHubuser +
+        "]" +
+        "(" +
+        response.GitHubuser,
+      +")" +
         " \n" +
         "* Email address: " +
         " " +
@@ -162,6 +162,7 @@ async function init() {
         "* Repository: " +
         " " +
         response.repository +
+        " \n" +
         "\n"
     );
   } catch (err) {
