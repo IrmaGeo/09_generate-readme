@@ -1,10 +1,10 @@
 // GIVEN a command - line application that accepts user input
-// WHEN I am prompted for information about my application repository
-// THEN a quality, professional README.md is generated with the title of your project and sections entitled Description, Table of Contents, Installation, Usage, License, Contributing, Tests, and Questions
-// var badmath = require("./generateMarkdown.js");
-var fs = require("fs");
-var inquirer = require("inquirer");
-// array of questions for user
+
+const fs = require("fs");
+const inquirer = require("inquirer");
+const axios = require("axios");
+
+// create array of questions for user====
 const questions = [
   {
     type: "input",
@@ -63,114 +63,172 @@ const questions = [
   },
 ];
 
-// function to write README file
+// ==== create function for write file and content ====
 function writeToFile(fileName, data) {
-  fs.appendFile(fileName, " " + " " + data + "\n", function (err) {
+  //create emty readme file every time when app run.
+  fs.writeFile(fileName, "", function (err) {
     if (err) {
       return console.log(err);
     }
-
     console.log("Success!");
   });
-}
-// ====== validate functtion=====
+  // WHEN I choose a license for my application from a list of options
+  // THEN a badge for that license is added hear the top of the README and a notice is added to the section of the README entitled License that explains which license the application is covered under
 
-// WHEN I enter my project title
-// THEN this is displayed as the title of the README
-// WHEN I enter a description, installation instructions, usage information, contribution guidelines, and test instructions
-// THEN this information is added to the sections of the README entitled Description, Installation, Usage, Contributing, and Tests
-async function init() {
-  try {
-    var response = await inquirer.prompt(questions);
-
-    if (response.license == "MIT license") {
-      response.licenseBG =
-        "[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)";
+  if (data.license == "MIT license") {
+    data.licenseBG =
+      "[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)";
+  } else {
+    if (data.license === "Apache License 2.0") {
+      data.licenseBG =
+        "[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)";
     } else {
-      if (response.license === "Apache License 2.0") {
-        response.licenseBG =
-          "[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)";
-      } else {
-        response.licenseBG =
-          "[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)";
-      }
+      data.licenseBG =
+        "[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)";
     }
+  }
+  // WHEN I enter my project title
+  // THEN this is displayed as the title of the README
+  fs.appendFile(
+    fileName,
+    "#" + " " + data.title + " " + data.licenseBG + "\n",
+    function (err) {
+      if (err) {
+        return console.log(err);
+      }
 
-    const title = await writeToFile("Read.md", [
-      "#" + " " + response.title + " " + response.licenseBG + "\n",
-    ]);
+      console.log("Success!");
+    }
+  );
 
-    // WHEN I click on the links in the Table of Contents
-    // THEN I am taken to the corresponding section of the README
-    const table = await writeToFile(
-      "Read.md",
-      "\n## Tabel of contact \n" +
-        "- [Installation](#Installations)\n" +
-        "- [Licenses](#Licenses)\n" +
-        "- [Questions](#questions)\n" +
-        "- [Tests](#Tests)\n" +
-        "\n"
-    );
-    const description = await writeToFile(
-      "Read.md",
-      "\n## Project Desctiption \n" + "``md " + response.description + "``\n"
-    );
+  // WHEN I click on the links in the Table of Contents
+  // THEN I am taken to the corresponding section of the README
+  fs.appendFile(
+    fileName,
+    "\n## Tabel of contact \n" +
+      "- [Installation](#Installations)\n" +
+      "- [Licenses](#Licenses)\n" +
+      "- [Questions](#questions)\n" +
+      "- [Tests](#Tests)\n" +
+      "\n",
+    function (err) {
+      if (err) {
+        return console.log(err);
+      }
+      console.log("Success!");
+    }
+  );
+  // // WHEN I enter a description, installation instructions, usage information, contribution guidelines, and test instructions
+  // // THEN this information is added to the sections of the README entitled Description, Installation, Usage, Contributing, and Tests
+  fs.appendFile(
+    fileName,
+    "\n## Project Desctiption \n" + "``md " + data.detascription + "``\n",
+    function (err) {
+      if (err) {
+        return console.log(err);
+      }
+      console.log("Success!");
+    }
+  );
+  fs.appendFile(
+    fileName,
+    "\n## Installations \n" + "```" + data.installation + "```" + " \n",
+    function (err) {
+      if (err) {
+        return console.log(err);
+      }
+      console.log("Success!");
+    }
+  );
+  fs.appendFile(fileName, "\n## USAGE \n" + " " + data.usage + " \n", function (
+    err
+  ) {
+    if (err) {
+      return console.log(err);
+    }
+    console.log("Success!");
+  });
+  fs.appendFile(
+    fileName,
+    "\n## Licenses \n" + " " + data.license + " \n",
+    function (err) {
+      if (err) {
+        return console.log(err);
+      }
+      console.log("Success!");
+    }
+  );
 
-    const installation = await writeToFile(
-      "Read.md",
-      "\n## Installations \n" + "```" + response.installation + "```" + " \n"
-    );
-    const usage = await writeToFile(
-      "Read.md",
-      "\n## USAGE \n" + " " + response.usage + " \n"
-    );
-    const license = await writeToFile(
-      "Read.md",
-      "\n## Licenses \n" + " " + response.license + " \n"
-    );
-    const Contributing = await writeToFile(
-      "Read.md",
-      "\n## Contributing \n" + " " + response.Contributing + " \n"
-    );
-    const tests = await writeToFile(
-      "Read.md",
-      "\n## Tests \n" + " " + response.tests + " \n"
-    );
-    // WHEN I enter my GitHub username
-    // THEN this is added to the section of the README entitled Questions, with a link to my GitHub profile
-    // WHEN I enter my email address
-    // THEN this is added to the section of the README entitled Questions, with instructions on how to reach me with additional questions
+  fs.appendFile(
+    fileName,
+    "\n## Contributing \n" + " " + data.Contributing + " \n",
+    function (err) {
+      if (err) {
+        return console.log(err);
+      }
+      console.log("Success!");
+    }
+  );
+  fs.appendFile(fileName, "\n## Tests \n" + " " + data.tests + " \n", function (
+    err
+  ) {
+    if (err) {
+      return console.log(err);
+    }
+    console.log("Success!");
+  });
+  // WHEN I enter my GitHub username // === get github user====
+  // THEN this is added to the section of the README entitled Questions, with a link to my GitHub profile
+  // WHEN I enter my email address
+  // THEN this is added to the section of the README entitled Questions, with instructions on how to reach me with additional questions
 
-    const question = await writeToFile(
-      "Read.md",
-
+  // user = data.GitHubuser;
+  const queryUrl = `https://api.github.com/users/${data.GitHubuser}`;
+  axios.get(queryUrl).then(function (res) {
+    prof = res.data.html_url;
+    fs.appendFile(
+      fileName,
       "\n## questions \n" +
         "* GitHub user: " +
         " " +
         "[" +
-        response.GitHubuser +
+        data.GitHubuser +
         "]" +
         "(" +
-        response.GitHubuser,
-      +")" +
+        prof +
+        ")" +
         " \n" +
         "* Email address: " +
         " " +
-        response.email +
+        data.email +
         " \n" +
         "* Repository: " +
         " " +
-        response.repository +
+        data.repository +
         " \n" +
-        "\n"
+        "\n",
+      function (err) {
+        if (err) {
+          return console.log(err);
+        }
+        console.log("Success!");
+      }
     );
+  });
+}
 
-    // WHEN I choose a license for my application from a list of options
-    // THEN a badge for that license is added hear the top of the README and a notice is added to the section of the README entitled License that explains which license the application is covered under
+// WHEN I am prompted for information about my application repository
+// THEN a quality, professional README.md is generated with the title of your project and sections entitled Description, Table of Contents, Installation, Usage, License, Contributing, Tests, and Questions
+
+async function init() {
+  try {
+    var response = await inquirer.prompt(questions);
+
+    const title = await writeToFile("Read.md", response);
   } catch (err) {
     console.log(err);
   }
 }
-// function call to initialize program
 
+// function call to initialize program
 init();
